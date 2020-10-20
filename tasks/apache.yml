@@ -1,0 +1,94 @@
+---
+
+- include_vars: apache.yml
+- include_vars: RedHat.yml
+
+   
+###########################################################################
+# install and sus it
+
+- name: Ensure Apache is installed on RHEL.
+  package:
+    name: "{{ apache_packages }}"
+    state: "{{ apache_packages_state }}"
+    enablerepo: "{{ apache_enablerepo | default(omit, true) }}"
+
+- name: Get installed version of Apache.
+  command: "{{ apache_daemon_path }}{{ apache_daemon }} -v"
+  changed_when: false
+  check_mode: false
+  register: _apache_version
+
+- name: Create apache_version variable.
+  set_fact:
+    apache_version: "{{ _apache_version.stdout.split()[2].split('/')[1] }}"
+
+
+# TODO trap this to fail if the version is not found
+- name: Include Apache 2.4 variables.
+  include_vars: apache_24.yml
+  when: "apache_version.split('.')[1] == '4'"
+
+
+###########################################################################
+# configure it
+
+- name: Configure Apache.
+  lineinfile:
+    dest: "{{ apache_server_root }}/conf/{{ apache_daemon }}.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    mode: 0644
+  with_items: "{{ apache_ports_configuration_items }}"
+  notify: restart apache
+
+- name: Check whether certificates defined in vhosts exist.
+  stat: path={{ item.certificate_file }}
+  register: apache_ssl_certificates
+  with_items: "{{ apache_vhosts_ssl }}"
+
+- name: Add apache vhosts configuration.
+  template:
+    src: "{{ apache_vhosts_template }}"
+    dest: "{{ apache_conf_path }}/{{ apache_vhosts_filename }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart apache
+  when: apache_create_vhosts | bool
+
+- name: Check if localhost cert exists (RHEL 8 and later).
+  stat:
+    path: /etc/pki/tls/certs/localhost.crt
+  register: localhost_cert
+  when: ansible_distribution_major_version | int >= 8
+
+- name: Ensure httpd certs are installed (RHEL 8 and later).
+  command: /usr/libexec/httpd-ssl-gencerts
+  when:
+    - ansible_distribution_major_version | int >= 8
+    - not localhost_cert.stat.exists
+
+###########################################################################
+# (re)start it
+
+- name: Ensure Apache has selected state and enabled on boot.
+  service:
+    name: "{{ apache_service }}"
+    state: "{{ apache_state }}"
+    enabled: true
+
+#######################################################################
+# open firwall
+
+- name: permit traffic in default zone for apache
+  ansible.posix.firewalld:
+    port:  "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - 80/tcp
+    - 443/tcp
+  notify:
+    - reload service firewalld
