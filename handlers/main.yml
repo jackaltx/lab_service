@@ -15,3 +15,17 @@
     daemon_reload: true
     state: reloaded
 
+- name: stop grafana
+  service:
+    name: "{{ grafana_service_name }}"
+    state: stopped
+
+- name: start grafana
+  service:
+    name: "{{ grafana_service_name }}"
+    state: started
+
+- name: restart grafana
+  service:
+    name: "{{ grafana_service_name }}"
+    state: restarted

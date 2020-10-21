@@ -1,0 +1,17 @@
+---
+
+###############################################################################
+#  this is based on: https://grafana.com/grafana/download
+#  because it's not a "yum repo", the is no automated update
+#  SMELL
+
+- name: "Download {{ grafana_rpm }}"
+  get_url:
+    url="{{ grafana_url }}/{{ grafana_rpm }}"
+    dest="/tmp/{{ grafana_rpm }}"
+
+- name: "Install {{ grafana_rpm }}"
+  yum:
+    name: "/tmp/{{ grafana_rpm }}"
+    state: present
+

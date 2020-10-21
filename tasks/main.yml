@@ -3,3 +3,7 @@
 - include: apache.yml
   when: lab_apache
 
+- include: grafana-server.yml
+  when: lab_grafana
+
+

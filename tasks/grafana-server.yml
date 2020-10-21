@@ -1,0 +1,19 @@
+---
+
+- include_vars: grafana-server.yml
+
+- name: Install grafana
+  include: grafana-server/install.yml
+
+- name: Configure grafana
+  include: grafana-server/config.yml
+
+- name: Provision grafana
+  include: grafana-server/provision.yml
+
+- name: Enable and (re)start grafana service
+  service:
+    name: "{{ grafana_service_name }}"
+    enabled: yes
+    state: restarted
+
