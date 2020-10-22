@@ -1,0 +1,51 @@
+---
+
+- name: "Prometheus -> create group ({{ prometheus_service_group }})"
+  group:
+    name: "{{ prometheus_service_group }}"
+    state: present
+    system: true
+
+- name: "Prometheus -> create user ({{ prometheus_service_username }})"
+  user:
+    name: "{{ prometheus_service_username }}"
+    groups: "{{ prometheus_service_group }}"
+    append: true
+    shell: /bin/bash
+  when: prometheus_manage_user
+
+#####################################################################
+#
+# Install Prometheus Server
+
+- name: Prometheus -> check if the server already exists
+  stat:
+    path: "/opt/prometheus-{{ prometheus_version }}.linux-amd64"
+  register: prometheus_install_path
+
+- name:  Prometheus -> download
+  get_url:
+    url: "{{ prometheus_download_url }}"
+    dest: "/tmp/prometheus-{{ prometheus_version }}.tar.gz"
+  when: not prometheus_install_path.stat.exists
+
+- name: Prometheus -> tarball extract
+  unarchive:
+    src: "/tmp/prometheus-{{ prometheus_version }}.tar.gz"
+    dest: "/opt/"
+    copy: false
+    owner: "{{ prometheus_service_username }}"
+    group: "{{ prometheus_service_group }}"
+  when: not prometheus_install_path.stat.exists
+
+- name: Create a symlink for /opt/prometheus
+  file:
+    src: "/opt/prometheus-{{ prometheus_version }}.linux-amd64"
+    dest: /opt/prometheus
+    owner: "{{ prometheus_service_username }}"
+    group: "{{ prometheus_service_group }}"
+    state: link
+  when: not prometheus_install_path.stat.exists
+
+
+

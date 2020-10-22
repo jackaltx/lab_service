@@ -1,0 +1,23 @@
+---
+
+prometheus_version: 2.22.0
+
+# download the tarball
+prometheus_download_url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+
+# when would I not want to do this
+prometheus_manage_user: true
+
+prometheus_service_username: prometheus
+prometheus_service_group: prometheus
+prometheus_service_name: prometheus
+
+prometheus_server: "{{ ansible_eth0.ipv4.address }}"
+scraped_hosts: "{{ hostvars[inventory_hostname]['groups']['workers']  }}"
+
+
+# SMELL TODO the snmp has not be tested here, this is vestigial
+router_ip: 0.0.0.0
+
+# SMELL this feels wrong, but I need it here
+node_exporter_service_name: node_exporter

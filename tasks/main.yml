@@ -3,7 +3,10 @@
 - include: apache.yml
   when: lab_apache
 
-- include: grafana-server.yml
+- include: prometheus_server.yml
+  when: lab_prometheus_server
+
+- include: grafana_server.yml
   when: lab_grafana
 
 

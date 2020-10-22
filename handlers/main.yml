@@ -1,5 +1,5 @@
 ---
-- name: restart apache
+- name: restart apache service
   service:
     name: "{{ apache_service }}"
     state: "{{ apache_restart_state }}"
@@ -9,23 +9,35 @@
     name: systemd
     daemon_reload: true
 
-- name: reload service firewalld
+- name: reload firewalld service
   systemd:
     name: firewalld
     daemon_reload: true
     state: reloaded
 
-- name: stop grafana
+- name: stop grafana service
   service:
     name: "{{ grafana_service_name }}"
     state: stopped
 
-- name: start grafana
+- name: start grafana service
   service:
     name: "{{ grafana_service_name }}"
     state: started
 
-- name: restart grafana
+- name: restart grafana service
   service:
     name: "{{ grafana_service_name }}"
     state: restarted
+
+- name: restart prometheus service
+  service:
+    name: "{{ prometheus_service_name }}"
+    state: restarted
+
+- name: restart node_exporter service
+  service:
+    name: "{{ node_exporter_service_name }}"
+    state: restarted
+  become: true
+

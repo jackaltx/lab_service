@@ -1,0 +1,29 @@
+---
+- name: Prometheus -> systemd service file
+  template:
+    src: prometheus_server/systemd.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart prometheus service
+
+- name: Prometheus -> configure firewall
+  ansible.posix.firewalld:
+    port: "{{ item }}" 
+    permanent: yes
+    state: enabled
+  loop:
+    - 9090/tcp
+    - 9100/tcp
+  notify:
+    - reload firewalld service
+ 
+- name: Prometheus -> enable and restart service
+  service:
+    name: prometheus
+    state: restarted
+    enabled: true
+

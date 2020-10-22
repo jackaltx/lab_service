@@ -41,7 +41,7 @@
     state: present
     mode: 0644
   with_items: "{{ apache_ports_configuration_items }}"
-  notify: restart apache
+  notify: restart apache service
 
 - name: Check whether certificates defined in vhosts exist.
   stat: path={{ item.certificate_file }}
@@ -55,7 +55,7 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart apache
+  notify: restart apache service
   when: apache_create_vhosts | bool
 
 - name: Check if localhost cert exists (RHEL 8 and later).
@@ -80,7 +80,7 @@
     enabled: true
 
 #######################################################################
-# open firwall
+# open firewall  for apache (80/443)
 
 - name: permit traffic in default zone for apache
   ansible.posix.firewalld:
@@ -91,4 +91,4 @@
     - 80/tcp
     - 443/tcp
   notify:
-    - reload service firewalld
+    - reload firewalld service

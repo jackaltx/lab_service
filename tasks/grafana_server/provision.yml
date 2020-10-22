@@ -36,7 +36,7 @@
 
     - name: "Set/Update grafana dashboard provision"
       template:
-        src:   provision_dashboard.yml.j2
+        src:   grafana_server/provision_dashboard.yml.j2
         dest:  "/etc/grafana/provision/dashboards/provision_dashboard.yml"
         owner: "{{ grafana_user }}"
         group: "{{ grafana_group }}"
@@ -44,12 +44,14 @@
 
     - name: "Set/Update grafana datasource provision"
       template:
-        src:   "provision_datasource.yml.j2"
+        src:   "grafana_server/provision_datasource.yml.j2"
         dest:  "/etc/grafana/provision/datasources/provision_datasource.yml"
         owner: "{{ grafana_user }}"
         group: "{{ grafana_group }}"
         mode: 0644
-      notify: restart grafana
+      notify: restart grafana service
 
   when: grafana_provision
-  become: true
+
+
+

@@ -25,7 +25,7 @@
 
 - name: "Set/Update grafana ini file ({{ grafana_conf_file }})"
   template:
-    src: grafana.ini.j2
+    src: grafana_server/grafana.ini.j2
     dest: "{{ grafana_conf_file }}"
     owner: "{{ grafana_user }}"
     group: "{{ grafana_group }}"
@@ -35,7 +35,7 @@
 
 - name: "Set/Update grafana config file ({{ grafana_defaults_file }})"
   template:
-    src: grafana-server.j2
+    src: grafana_server/grafana-server.j2
     dest: "{{ grafana_defaults_file }}"
     owner: "{{ grafana_user }}"
     group: "{{ grafana_group }}"

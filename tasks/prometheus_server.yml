@@ -1,0 +1,20 @@
+---
+
+- include_vars: prometheus_server.yml
+
+######################################################
+# SMELL  test that the node exporter has been done
+
+#######################################################
+# SMELL TODO  this is a tarbar installation...version is fixed
+
+- name:  Prometheus -> install task
+  include:  prometheus_server/install.yml
+
+- name:  Prometheus -> configure task 
+  include:  prometheus_server/configure.yml
+
+- name:  Prometheus -> service task
+  include:  prometheus_server/service.yml
+
+

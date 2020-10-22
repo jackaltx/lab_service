@@ -1,0 +1,32 @@
+---
+- name: Prometheus -> Install snmp with mibs and exporter
+  yum: 
+    name:
+      - net-snmp-libs
+      - net-snmp-utils
+    state: present
+  tags:
+    - perfmon
+
+- name: Configure Prometheus snmp.yml
+  copy:
+    src: snmp.yml
+    dest: /etc/prometheus/snmp.yml
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - perfmon
+
+######################################################################
+# SMELL TODO  this is for ubiquity now, need to add our switches
+
+- name: Prometheus -> copy the MIB file to the proper location
+  copy:
+    src: UBNT-MIB 
+    dest: /var/lib/snmp/mibs/UBNT-MIB
+    owner: root
+    group: root
+    mode: '0664'
+  tags:
+    - perfmon
