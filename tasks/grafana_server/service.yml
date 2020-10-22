@@ -1,0 +1,17 @@
+---
+- name: Grafana -> firewall
+  ansible.posix.firewalld:
+    port:  "{{ item }}"
+    permanent: yes
+    state: enabled
+  loop:
+    - "{{grafana_http_port}}/tcp"
+  notify:
+    - reload firewalld service
+
+- name: Grafana -> service enable and (re)start
+  service:
+    name: "{{ grafana_service_name }}"
+    enabled: yes
+    state: restarted
+

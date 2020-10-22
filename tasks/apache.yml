@@ -1,19 +1,25 @@
 ---
 
 - include_vars: apache.yml
+
+#################################
+# SMELL  this is only for RHEL
 - include_vars: RedHat.yml
 
-   
+
 ###########################################################################
 # install and sus it
 
-- name: Ensure Apache is installed on RHEL.
+- name: Apache -> install
   package:
     name: "{{ apache_packages }}"
     state: "{{ apache_packages_state }}"
     enablerepo: "{{ apache_enablerepo | default(omit, true) }}"
 
-- name: Get installed version of Apache.
+###########################################################################
+# Version specific configuration
+#
+- name: Apache -> get installed version.
   command: "{{ apache_daemon_path }}{{ apache_daemon }} -v"
   changed_when: false
   check_mode: false
@@ -23,17 +29,21 @@
   set_fact:
     apache_version: "{{ _apache_version.stdout.split()[2].split('/')[1] }}"
 
-
-# TODO trap this to fail if the version is not found
 - name: Include Apache 2.4 variables.
   include_vars: apache_24.yml
   when: "apache_version.split('.')[1] == '4'"
+
+- name: Throw exception if not Apache 2.4
+  fail: 
+    msg: "This only works for Apache 2.4.  This node is {{ apache_version }}"
+  when: "apache_version.split('.')[1] != '4'"
+
 
 
 ###########################################################################
 # configure it
 
-- name: Configure Apache.
+- name: Apache -> configure
   lineinfile:
     dest: "{{ apache_server_root }}/conf/{{ apache_daemon }}.conf"
     regexp: "{{ item.regexp }}"
@@ -73,7 +83,7 @@
 ###########################################################################
 # (re)start it
 
-- name: Ensure Apache has selected state and enabled on boot.
+- name: Apache -> service default
   service:
     name: "{{ apache_service }}"
     state: "{{ apache_state }}"
@@ -82,7 +92,7 @@
 #######################################################################
 # open firewall  for apache (80/443)
 
-- name: permit traffic in default zone for apache
+- name: Apache -> firewall
   ansible.posix.firewalld:
     port:  "{{ item }}"
     permanent: yes

@@ -15,6 +15,10 @@ prometheus_service_name: prometheus
 prometheus_server: "{{ ansible_eth0.ipv4.address }}"
 scraped_hosts: "{{ hostvars[inventory_hostname]['groups']['workers']  }}"
 
+prometheus_server_ports:
+  - 9090/tcp
+  - 9100/tcp
+
 
 # SMELL TODO the snmp has not be tested here, this is vestigial
 router_ip: 0.0.0.0

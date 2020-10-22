@@ -1,5 +1,4 @@
 ---
-
 - include_vars: grafana_server.yml
 
 - name: Grafana ->  install
@@ -11,19 +10,7 @@
 - name: Grafana -> provision
   include: grafana_server/provision.yml
 
-- name: Grafana -> fireall
-  ansible.posix.firewalld:
-    port:  "{{ item }}"
-    permanent: yes
-    state: enabled
-  loop:
-    - "{{grafana_http_port}}/tcp"
-  notify:
-    - reload firewalld service
+- name: Grafana -> service 
+  include: grafana_server/service.yml
 
-- name: Grafana -> service enable and (re)start
-  service:
-    name: "{{ grafana_service_name }}"
-    enabled: yes
-    state: restarted
 

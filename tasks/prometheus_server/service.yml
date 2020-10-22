@@ -10,14 +10,12 @@
     - reload systemd
     - restart prometheus service
 
-- name: Prometheus -> configure firewall
+- name: "Prometheus -> configure firewall {{ prometheus_server_ports }}"
   ansible.posix.firewalld:
     port: "{{ item }}" 
     permanent: yes
     state: enabled
-  loop:
-    - 9090/tcp
-    - 9100/tcp
+  with_items: "{{ prometheus_server_ports }}"
   notify:
     - reload firewalld service
  
