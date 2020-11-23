@@ -1,0 +1,28 @@
+---
+- include_vars: graylog_server.yml
+
+- name: Graylog-> Install headless jdk
+  yum:
+    name:
+      - java-1.8.0-openjdk-headless.x86_64
+
+
+- name: Graylog ->  install repos
+  include: graylog_server/install_repos.yml
+
+- name: Graylog ->  install
+  include: graylog_server/install.yml
+
+- name: Graylog -> configure
+  include: graylog_server/configure.yml
+
+#- name: Graylog -> provision
+#  include: graylog_server/provision.yml
+
+- name: Graylog -> service 
+  include: graylog_server/service.yml
+
+- name: Graylog -> test 
+  include: graylog_server/test.yml
+
+

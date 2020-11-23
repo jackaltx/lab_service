@@ -1,0 +1,10 @@
+---
+
+- name: Configure Elasticsearch for graylog
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^cluster.name'
+    insertafter: '^#cluster.name'
+    line: 'cluster.name: graylog'
+  become: true
+

@@ -1,0 +1,19 @@
+---
+# TODO SMELL dnf for 8+
+#
+- name: Install rpms
+  yum:
+    name:
+     - "{{ mongod_rpm }}"
+     - "{{ elasticsearch_rpm }}"
+    state: present
+
+- name: Install graylog
+  yum:
+    name:
+     - "{{ graylog_server_rpm }}"
+     - "{{ graylog_plugins_rpm }}"
+     - "{{ graylog_integrations_rpm }}"
+     - "{{ graylog_enterprise_rpm }}"
+    state: present
+

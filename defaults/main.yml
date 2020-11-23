@@ -4,4 +4,5 @@ lab_apache: false
 lab_prometheus_server: false
 lab_prometheus_snmp: false
 lab_grafana: false
+lab_graylog: false
 

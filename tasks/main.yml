@@ -9,4 +9,7 @@
 - include: grafana_server.yml
   when: lab_grafana
 
+- include: graylog_server.yml
+  when: lab_graylog
+
 

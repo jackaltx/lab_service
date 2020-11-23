@@ -1,0 +1,30 @@
+---
+
+- name:  create  mongodb repo
+  copy:
+    src: mongodb-org.repo
+    dest: /etc/yum.repos.d/mongodb-org.repo
+  notify: reload systemd
+
+- name: Install the elasticsearch rpm key
+  rpm_key:
+    state: present
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Create elasticsearch repo
+  copy:
+    src: elasticsearch.repo
+    dest: /etc/yum.repos.d/elasticsearch.repo
+  notify: reload systemd
+
+- name: Install graylog repos
+  yum:
+    name:
+     - "{{ graylog_yum_rpm }}"
+    state: present
+  notify: reload systemd
+
+
+
+
+

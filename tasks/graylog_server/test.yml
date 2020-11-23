@@ -1,0 +1,22 @@
+---
+# graylog_uri: http://localhost:9200/_cluster/health?pretty=true
+
+- name: Check Elasticsearch Service
+  uri:
+    url: "{{ graylog_uri }}"
+    method: GET
+    timeout: 10
+    return_content: yes
+  register: request_data
+
+- name: debug output
+  debug:
+    var: request_data
+
+- name: Check if Elasticsearch service is up
+  fail:
+    msg: The system may not be provisioned according to the CMDB status.
+  when:
+    - request_data.status == 404
+
+

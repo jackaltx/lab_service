@@ -41,3 +41,10 @@
     state: restarted
   become: true
 
+- name: restart elasticsearch
+  systemd:
+    name: "{{ elasticsearch_service_name }}"
+    state: restarted
+  become: true
+
+

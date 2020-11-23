@@ -1,0 +1,25 @@
+---
+
+- name: Start mongod service
+  systemd:
+    name: "{{ mongodb_service_name }}"
+    state: started
+
+- name: Start elasticsearch service
+  systemd:
+    name: "{{ elasticsearch_service_name }}"
+    state: started
+
+- name: Enable service mongod and ensure it is not masked?
+  systemd:
+    name: "{{ mongodb_service_name }}"
+    enabled: yes
+    masked: no
+
+- name: Enable elasticsearch and ensure it is not masked
+  systemd:
+    name: "{{ elasticsearch_service_name }}"
+    enabled: yes
+    masked: no
+
+

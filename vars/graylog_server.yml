@@ -1,0 +1,18 @@
+---
+
+elasticsearch_rpm: elasticsearch
+mongod_rpm: mongodb-org
+
+
+elasticsearch_service_name: elasticsearch.service
+mongodb_service_name: mongod.service
+
+graylog_yum_rpm: https://packages.graylog2.org/repo/packages/graylog-3.3-repository_latest.rpm
+graylog_server_rpm:  graylog-server 
+graylog_plugins_rpm: graylog-enterprise-plugins
+graylog_integrations_rpm: graylog-integrations-plugins 
+graylog_enterprise_rpm: graylog-enterprise-integrations-plugins
+
+#graylog_uri: http://localhost:9200/_cluster/health?pretty=true
+graylog_uri: http://localhost:9200
+
